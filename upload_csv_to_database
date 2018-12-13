@@ -1,0 +1,27 @@
+///////////////////////////////////// INSERTING CSV DATA TO DATABASE ////////////////////////////////////////////////
+$row = 0;
+if (($handle = fopen("Dropship.csv", "r")) !== FALSE) {
+ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+   if ($row > 0) {
+     try {
+       $sql = "INSERT INTO northwest (whs,upc,full_upc,sku,description,description2,feed_qty) values ( :whs, :upc, :full_upc, :sku, :description, :description2, :feed_qty  ) ";
+       $stmt = $dbh->prepare($sql);
+       $stmt->bindValue(":whs",  $data[0]);
+       $stmt->bindValue(":upc",  $data[1]);
+       $stmt->bindValue(":full_upc",  $data[2]);
+       $stmt->bindValue(":sku",  $data[3]);
+       $stmt->bindValue(":description",  $data[4]);
+       $stmt->bindValue(":description2",  $data[5]);
+       $stmt->bindValue(":feed_qty",  $data[6]);
+       $stmt->execute();
+        
+     } catch (Exception $ex) {
+       echo($ex->getMessage());
+     }
+   }
+   $row++;
+ }
+  
+ fclose($handle);
+}
+// exit();
